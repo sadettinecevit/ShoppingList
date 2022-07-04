@@ -1,9 +1,12 @@
 ﻿using MediatR;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using ShoppingList.Application;
 using ShoppingList.Application.Interfaces.Repositories;
 using ShoppingList.Application.Interfaces.UnitOfWork;
+using ShoppingList.Domain.Entities;
 using ShoppingList.Persistence.Context;
 using ShoppingList.Persistence.Repository;
 using ShoppingList.Persistence.UnitOfWork;
@@ -26,6 +29,7 @@ namespace ShoppingList.Persistence
             services.AddTransient<IUnitOfWorkService, UnitOfWorkService>();
 
             services.AddMediatR(Assembly.GetExecutingAssembly());
+            services.AddApplicationService(configuration);
         }
     }
 }

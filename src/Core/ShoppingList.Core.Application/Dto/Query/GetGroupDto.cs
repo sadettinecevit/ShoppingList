@@ -2,8 +2,9 @@
 
 namespace ShoppingList.Application.Dto.Query
 {
-    public class GetGroupDto : FilteredPageQuery, IRequest<IQueryable<GetByIdGroupResponseDto>>
+    public class GetGroupDto : FilteredPageQuery, IRequest<HandlerResponse<List<GetByIdGroupResponseDto>>>
     {
+        public string Id { get; set; } = string.Empty;
     }
 
 }

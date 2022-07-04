@@ -1,6 +1,4 @@
 ﻿using Microsoft.Extensions.Caching.Distributed;
-using ShoppingList.Domain.Common;
-using ShoppingList.Infrastructure.Services.Cache;
 
 namespace ShoppingList.Infrastructure.Services.Cache.Redis
 {

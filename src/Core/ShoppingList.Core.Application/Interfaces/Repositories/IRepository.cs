@@ -6,8 +6,8 @@ namespace ShoppingList.Application.Interfaces.Repositories
     {
         Task<List<T>> GetAsync();
         Task<T> GetByIdAsync(string id);
-        Task<int> Add(T entity);
-        Task<int> Update(T entity);
-        Task<int> Delete(T entity);
+        Task<RepositoryResponse<T>> Add(T entity);
+        Task<RepositoryResponse<T>> Update(T entity);
+        Task<RepositoryResponse<T>> Delete(T entity);
     }
 }

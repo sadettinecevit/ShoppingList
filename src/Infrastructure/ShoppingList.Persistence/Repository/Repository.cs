@@ -1,41 +1,116 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using ShoppingList.Application.Interfaces.Repositories;
 using ShoppingList.Domain.Common;
+using ShoppingList.Infrastructure.Services.Cache.Redis;
 using ShoppingList.Persistence.Context;
+using System.Text;
+using System.Text.Json;
 
 namespace ShoppingList.Persistence.Repository
 {
-    public class Repository<T> : IRepository<T> where T : class, IBaseEntity, new()
+    public class Repository<T> : RepositoryResponse<T>, IRepository<T> where T : class, IBaseEntity, new()
     {
-        private readonly ApplicationDbContext _context;
+        public string cacheName { get; set; }
 
-        public Repository(ApplicationDbContext context)
+        private readonly ApplicationDbContext _context;
+        private readonly RedisCacheService _redisCacheService;
+
+        public Repository(ApplicationDbContext context, RedisCacheService redisCacheService)
         {
             _context = context;
+            _redisCacheService = redisCacheService;
         }
 
         private DbSet<T> Table { get => _context.Set<T>(); }
 
-        public virtual async Task<int> Add(T entity)
+        public virtual async Task<RepositoryResponse<T>> Add(T entity)
         {
-            await Table.AddAsync(entity);
-            return await _context.SaveChangesAsync();
+            T result = Table.AddAsync(entity).Result.Entity;
+            int totalRecordCount = await _context.SaveChangesAsync();
+
+            if (totalRecordCount > 0)
+            {
+                await _redisCacheService.DeleteAsync(cacheName);
+            }
+
+            return new RepositoryResponse<T>()
+            {
+                Entity = result,
+                TotalRecordCount = TotalRecordCount
+            };
         }
 
-        public virtual async Task<int> Update(T entity)
+        public virtual async Task<RepositoryResponse<T>> Update(T entity)
         {
-            Table.Update(entity);
-            return await _context.SaveChangesAsync();
+            T result = Table.Update(entity).Entity;
+            int totalRecordCount = await _context.SaveChangesAsync();
+
+            if (totalRecordCount > 0)
+            {
+                await _redisCacheService.DeleteAsync(cacheName);
+            }
+
+            return new RepositoryResponse<T>()
+            {
+                Entity = result,
+                TotalRecordCount = TotalRecordCount
+            };
         }
 
-        public virtual async Task<int> Delete(T entity)
+        public virtual async Task<RepositoryResponse<T>> Delete(T entity)
         {
-            Table.Remove(entity);
-            return await _context.SaveChangesAsync();
+            T result = Table.Remove(entity).Entity;
+            int totalRecordCount = await _context.SaveChangesAsync();
+
+            if (totalRecordCount > 0)
+            {
+                await _redisCacheService.DeleteAsync(cacheName);
+            }
+
+            return new RepositoryResponse<T>()
+            {
+                Entity = result,
+                TotalRecordCount = TotalRecordCount
+            };
         }
 
-        public async Task<List<T>> GetAsync() => await Table.ToListAsync<T>();
+        public async Task<List<T>> GetAsync()
+        {
+            List<T> result = new List<T>();
 
-        public async Task<T> GetByIdAsync(string id) => await Table.FindAsync(id);
+            byte[] bytes = await _redisCacheService.GetAsync(cacheName);
+
+            if (bytes != null)
+            {
+                string json = Encoding.UTF8.GetString(bytes);
+                result = JsonSerializer.Deserialize<List<T>>(json);
+            }
+            else
+            {
+                result = await Table.ToListAsync<T>();
+            }
+
+            return result;
+        }
+
+        public async Task<T> GetByIdAsync(string id)
+        {
+            List<T> nosqlData = new List<T>();
+            T result = new();
+
+            byte[] bytes = await _redisCacheService.GetAsync(cacheName);
+
+            if (bytes != null)
+            {
+                string json = Encoding.UTF8.GetString(bytes);
+                nosqlData = JsonSerializer.Deserialize<List<T>>(json);
+                result = nosqlData.FirstOrDefault(d => d.GetType().GetProperty("Id").GetValue(typeof(string)).ToString() == id);
+            }
+            else
+            {
+                result = await Table.FindAsync(id);
+            }
+            return result;
+        }
     }
 }

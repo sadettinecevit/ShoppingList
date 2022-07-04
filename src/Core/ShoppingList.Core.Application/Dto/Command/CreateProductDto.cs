@@ -1,8 +1,10 @@
 ﻿using MediatR;
+using ShoppingList.Application.Interfaces.Repositories;
+using ShoppingList.Domain.Entities;
 
 namespace ShoppingList.Application.Dto.Command
 {
-    public class CreateProductDto : IRequest<int>
+    public class CreateProductDto : IRequest<HandlerResponse<Product>>
 	{
 		public string Name { get; set; }
 		public string Brand { get; set; }

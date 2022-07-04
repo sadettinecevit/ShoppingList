@@ -2,8 +2,9 @@
 
 namespace ShoppingList.Application.Dto.Query
 {
-    public class GetByIdCartDto : FilteredPageQuery, IRequest<GetByIdCartResponseDto>
+    public class GetByIdCartDto : IRequest<HandlerResponse<GetByIdCartResponseDto>>
     {
+        public string Id { get; set; } = string.Empty;
     }
 
 }

@@ -1,5 +1,4 @@
-﻿using Microsoft.AspNetCore.Identity;
-using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
+﻿using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
 using ShoppingList.Application.Interfaces.Context;
 using ShoppingList.Domain.Entities;
@@ -21,11 +20,6 @@ namespace ShoppingList.Persistence.Context
         protected override void OnModelCreating(ModelBuilder builder)
         {
             base.OnModelCreating(builder);
-
-            builder.Entity<Cart>().HasOne<Cart>().WithMany().HasForeignKey();
-            builder.Entity<Category>().HasOne<Category>().WithMany().HasForeignKey();
-            builder.Entity<Group>().HasOne<Group>().WithMany().HasForeignKey();
-            builder.Entity<Product>().HasOne<Product>().WithMany().HasForeignKey();
         }
     }
 }

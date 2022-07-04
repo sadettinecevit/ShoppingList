@@ -7,7 +7,7 @@
         public string Brand { get; set; }
         public float Quantity { get; set; }
         public decimal Price { get; set; }
-        public bool IsTaken { get; set; } = false;
+        public bool IsTaken { get; set; }
     }
 
 }
