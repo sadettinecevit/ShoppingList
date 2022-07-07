@@ -12,8 +12,8 @@ using ShoppingList.Persistence.Context;
 namespace ShoppingList.Persistence.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20220704183539_init")]
-    partial class init
+    [Migration("20220706185515_initial")]
+    partial class initial
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
@@ -231,6 +231,7 @@ namespace ShoppingList.Persistence.Migrations
             modelBuilder.Entity("ShoppingList.Domain.Entities.Cart", b =>
                 {
                     b.Property<string>("Id")
+                        .ValueGeneratedOnAdd()
                         .HasColumnType("nvarchar(450)");
 
                     b.Property<DateTime>("CreateTime")
@@ -250,9 +251,11 @@ namespace ShoppingList.Persistence.Migrations
             modelBuilder.Entity("ShoppingList.Domain.Entities.Category", b =>
                 {
                     b.Property<string>("Id")
+                        .ValueGeneratedOnAdd()
                         .HasColumnType("nvarchar(450)");
 
                     b.Property<string>("CartId")
+                        .IsRequired()
                         .HasColumnType("nvarchar(450)");
 
                     b.Property<DateTime?>("CompeleteTime")
@@ -275,9 +278,11 @@ namespace ShoppingList.Persistence.Migrations
             modelBuilder.Entity("ShoppingList.Domain.Entities.Group", b =>
                 {
                     b.Property<string>("Id")
+                        .ValueGeneratedOnAdd()
                         .HasColumnType("nvarchar(450)");
 
                     b.Property<string>("CategoryId")
+                        .IsRequired()
                         .HasColumnType("nvarchar(450)");
 
                     b.Property<DateTime?>("CompeleteTime")
@@ -300,6 +305,7 @@ namespace ShoppingList.Persistence.Migrations
             modelBuilder.Entity("ShoppingList.Domain.Entities.Product", b =>
                 {
                     b.Property<string>("Id")
+                        .ValueGeneratedOnAdd()
                         .HasColumnType("nvarchar(450)");
 
                     b.Property<string>("Brand")
@@ -307,6 +313,7 @@ namespace ShoppingList.Persistence.Migrations
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("GroupId")
+                        .IsRequired()
                         .HasColumnType("nvarchar(450)");
 
                     b.Property<bool>("IsTaken")
@@ -408,38 +415,35 @@ namespace ShoppingList.Persistence.Migrations
 
             modelBuilder.Entity("ShoppingList.Domain.Entities.Category", b =>
                 {
-                    b.HasOne("ShoppingList.Domain.Entities.Cart", null)
-                        .WithMany("ShoppingCategory")
-                        .HasForeignKey("CartId");
+                    b.HasOne("ShoppingList.Domain.Entities.Cart", "Cart")
+                        .WithMany()
+                        .HasForeignKey("CartId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Cart");
                 });
 
             modelBuilder.Entity("ShoppingList.Domain.Entities.Group", b =>
                 {
-                    b.HasOne("ShoppingList.Domain.Entities.Category", null)
-                        .WithMany("ShoppingGroup")
-                        .HasForeignKey("CategoryId");
+                    b.HasOne("ShoppingList.Domain.Entities.Category", "Category")
+                        .WithMany()
+                        .HasForeignKey("CategoryId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Category");
                 });
 
             modelBuilder.Entity("ShoppingList.Domain.Entities.Product", b =>
                 {
-                    b.HasOne("ShoppingList.Domain.Entities.Group", null)
-                        .WithMany("ProductList")
-                        .HasForeignKey("GroupId");
-                });
+                    b.HasOne("ShoppingList.Domain.Entities.Group", "Group")
+                        .WithMany()
+                        .HasForeignKey("GroupId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
 
-            modelBuilder.Entity("ShoppingList.Domain.Entities.Cart", b =>
-                {
-                    b.Navigation("ShoppingCategory");
-                });
-
-            modelBuilder.Entity("ShoppingList.Domain.Entities.Category", b =>
-                {
-                    b.Navigation("ShoppingGroup");
-                });
-
-            modelBuilder.Entity("ShoppingList.Domain.Entities.Group", b =>
-                {
-                    b.Navigation("ProductList");
+                    b.Navigation("Group");
                 });
 #pragma warning restore 612, 618
         }

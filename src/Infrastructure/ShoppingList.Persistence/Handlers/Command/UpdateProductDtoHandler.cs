@@ -4,6 +4,7 @@ using ShoppingList.Application.Dto.Command;
 using ShoppingList.Application.Interfaces.Repositories;
 using ShoppingList.Application.Interfaces.UnitOfWork;
 using ShoppingList.Domain.Entities;
+using System.Diagnostics;
 
 namespace ShoppingList.Persistence.Handlers.Command
 {
@@ -15,7 +16,11 @@ namespace ShoppingList.Persistence.Handlers.Command
 
         public async Task<HandlerResponse<Product>> Handle(UpdateProductDto request, CancellationToken cancellationToken)
         {
-            RepositoryResponse<Product> result = await _unitOfWork._productRepository.Update(
+            RepositoryResponse<Product> result = null;
+            try
+            {
+                result
+                = await _unitOfWork._productRepository.Update(
                 new Product
                 {
                     Brand = request.Brand,
@@ -24,7 +29,12 @@ namespace ShoppingList.Persistence.Handlers.Command
                     Price = request.Price,
                     Quantity = request.Quantity
                 });
-
+            }
+            catch (Exception ex)
+            {
+                Debug.WriteLine(ex);
+                throw ex;
+            }
             return new HandlerResponse<Product>()
             {
                 IsSuccess = result.TotalRecordCount > 0,

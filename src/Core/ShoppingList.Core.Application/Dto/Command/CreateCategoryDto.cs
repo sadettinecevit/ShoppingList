@@ -8,7 +8,7 @@ namespace ShoppingList.Application.Dto.Command
 	{
 		public string Name { get; set; }
 		public DateTime CompeleteTime { get; set; }
-		public IQueryable<Group> ShoppingGroup { get; set; }
+		public string? CartId { get; set; }
 	}
 
 }

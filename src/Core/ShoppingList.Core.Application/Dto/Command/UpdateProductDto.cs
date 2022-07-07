@@ -11,5 +11,6 @@ namespace ShoppingList.Application.Dto.Command
 		public float Quantity { get; set; }
 		public decimal Price { get; set; }
 		public bool IsTaken { get; set; }
+		public string GroupId { get; set; } // Group
 	}
 }

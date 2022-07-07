@@ -26,7 +26,7 @@ namespace ShoppingList.Persistence.Handlers.Query
                     Id = cart.Id,
                     CreateTime = cart.CreateTime,
                     Owner = cart.Owner,
-                    ShoppingCategory = cart.ShoppingCategory
+                    ShoppingCategory = _unitOfWork._categoryRepository.GetAsync().Result.Where(I => I.Cart == cart).AsQueryable()
                 };
             }
 

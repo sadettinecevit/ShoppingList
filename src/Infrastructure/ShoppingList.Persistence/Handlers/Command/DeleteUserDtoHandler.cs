@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Identity;
 using ShoppingList.Application.Dto;
 using ShoppingList.Application.Dto.Command;
 using ShoppingList.Domain.Entities;
+using System.Diagnostics;
 
 namespace ShoppingList.Persistence.Handlers.Command
 {
@@ -16,9 +17,18 @@ namespace ShoppingList.Persistence.Handlers.Command
 
         public async Task<HandlerResponse<User>> Handle(DeleteUserDto request, CancellationToken cancellationToken)
         {
-            User user = await _userManager.FindByIdAsync(request.Id);
-            var identityResult = await _userManager.DeleteAsync(user);
-
+            IdentityResult identityResult = null;
+            User user = null;
+            try
+            {
+                user = await _userManager.FindByIdAsync(request.Id);
+                identityResult = await _userManager.DeleteAsync(user);
+            }
+            catch (Exception ex)
+            {
+                Debug.WriteLine(ex);
+                throw ex;
+            }
             return new HandlerResponse<User>()
             {
                 IsSuccess = identityResult.Succeeded,

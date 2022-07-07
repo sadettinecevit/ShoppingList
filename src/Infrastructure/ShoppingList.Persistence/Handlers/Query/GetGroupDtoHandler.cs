@@ -13,22 +13,23 @@ namespace ShoppingList.Persistence.Handlers.Query
         }
         public async Task<HandlerResponse<List<GetByIdGroupResponseDto>>> Handle(GetGroupDto request, CancellationToken cancellationToken)
         {
-            List<Group> group = await _unitOfWork._groupRepository.GetAsync();
+            List<Group> group = _unitOfWork._groupRepository.GetAsync().Result.ToList();
 
             HandlerResponse<List<GetByIdGroupResponseDto>> handlerResponse = new HandlerResponse<List<GetByIdGroupResponseDto>>();
-            handlerResponse.IsSuccess = group != null;
 
             if (group != null)
             {
                 foreach (Group item in group)
                 {
+                    IQueryable<Product> products = _unitOfWork._productRepository.GetAsync().Result.Where(I=>I.Group == item).AsQueryable();
+                    
                     handlerResponse.Data.Add(new GetByIdGroupResponseDto()
                     {
                         Id = item.Id,
                         Name = item.Name,
                         CreateTime = item.CreateTime,
                         CompeleteTime = item.CompeleteTime,
-                        ProductList = item.ProductList
+                        ProductList = products
                     });
                 }
             }

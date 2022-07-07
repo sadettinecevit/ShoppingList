@@ -7,7 +7,7 @@ namespace ShoppingList.Application.Dto.Command
     public class CreateGroupDto : IRequest<HandlerResponse<Group>>
 	{
 		public string Name { get; set; }
-		public IQueryable<Product> ProductList { get; set; }
+		public string? CategoryId { get; set; }
 	}
 
 }

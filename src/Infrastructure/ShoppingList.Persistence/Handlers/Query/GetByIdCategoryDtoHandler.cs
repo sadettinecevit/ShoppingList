@@ -26,7 +26,7 @@ namespace ShoppingList.Persistence.Handlers.Query
                     Name = category.Name,
                     CreateTime = category.CreateTime,
                     CompeleteTime = category.CompeleteTime,
-                    ShoppingGroup = category.ShoppingGroup
+                    ShoppingGroup = _unitOfWork._groupRepository.GetAsync().Result.Where(I=>I.Category == category).AsQueryable()
                 };
             }
 

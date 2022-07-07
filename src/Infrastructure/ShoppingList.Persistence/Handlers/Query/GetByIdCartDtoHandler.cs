@@ -24,8 +24,7 @@ namespace ShoppingList.Persistence.Handlers.Query
                 {
                     Id = cart.Id,
                     CreateTime = cart.CreateTime,
-                    Owner = cart.Owner,
-                    ShoppingCategory = cart.ShoppingCategory
+                    Owner = cart.Owner
                 };
             }
 

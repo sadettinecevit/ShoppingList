@@ -4,8 +4,7 @@ using ShoppingList.Application.Dto.Command;
 using ShoppingList.Application.Interfaces.Repositories;
 using ShoppingList.Application.Interfaces.UnitOfWork;
 using ShoppingList.Domain.Entities;
-using System.Security.Cryptography;
-using System.Text;
+using System.Diagnostics;
 
 namespace ShoppingList.Persistence.Handlers.Command
 {
@@ -16,7 +15,22 @@ namespace ShoppingList.Persistence.Handlers.Command
         }
         public async Task<HandlerResponse<Cart>> Handle(CreateCartDto request, CancellationToken cancellationToken)
         {
-            RepositoryResponse<Cart> result = await _unitOfWork._cartRepository.Add(new Cart { Owner = request.Owner, ShoppingCategory = request.ShoppingCategory });
+            User owner = await _unitOfWork._userManager.FindByNameAsync(request.OwnerUsername);
+
+            RepositoryResponse<Cart> result = null;
+            try
+            {
+                result = new RepositoryResponse<Cart>();
+                if (owner != null)
+                {
+                    result = await _unitOfWork._cartRepository.Add(new Cart { Owner = owner });
+                }
+            }
+            catch (Exception ex)
+            {
+                Debug.WriteLine(ex);
+                throw ex;
+            }
             return new HandlerResponse<Cart>()
             {
                 IsSuccess = result.TotalRecordCount > 0,

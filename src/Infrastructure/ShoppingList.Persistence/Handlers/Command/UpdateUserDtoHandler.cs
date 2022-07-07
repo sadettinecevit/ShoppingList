@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Identity;
 using ShoppingList.Application.Dto;
 using ShoppingList.Application.Dto.Command;
 using ShoppingList.Domain.Entities;
+using System.Diagnostics;
 
 namespace ShoppingList.Persistence.Handlers.Command
 {
@@ -17,18 +18,27 @@ namespace ShoppingList.Persistence.Handlers.Command
         public async Task<HandlerResponse<User>> Handle(UpdateUserDto request, CancellationToken cancellationToken)
         {
             User user = await _userManager.FindByIdAsync(request.Id);
+            IdentityResult identityResult = null;
 
-            user.Email = request.Email ?? user.Email;
-            user.Name = request.Name ?? user.Name;
-            user.LastName = request.Lastname ?? user.LastName;
-
-            var identityResult = await _userManager.UpdateAsync(user);
-
-            if(identityResult.Succeeded)
+            try
             {
-                _userManager.ChangePasswordAsync(user, request.OldPassword, request.Password);
-            }
+                user.Email = request.Email ?? user.Email;
+                user.Name = request.Name ?? user.Name;
+                user.LastName = request.Lastname ?? user.LastName;
+                user.UserName = request.Username ?? user.UserName;
 
+                identityResult = await _userManager.UpdateAsync(user);
+
+                if (identityResult.Succeeded)
+                {
+                    _userManager.ChangePasswordAsync(user, request.OldPassword, request.Password);
+                }
+            }
+            catch (Exception ex)
+            {
+                Debug.WriteLine(ex);
+                throw ex;
+            }
             return new HandlerResponse<User>()
             {
                 IsSuccess = identityResult.Succeeded,

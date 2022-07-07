@@ -26,7 +26,7 @@ namespace ShoppingList.Persistence.Handlers.Query
                     Name = group.Name,
                     CreateTime = group.CreateTime,
                     CompeleteTime = group.CompeleteTime,
-                    ProductList = group.ProductList
+                    ProductList = _unitOfWork._productRepository.GetAsync().Result.Where(I=>I.Group.Id == group.Id).AsQueryable()
                 };
             }
 

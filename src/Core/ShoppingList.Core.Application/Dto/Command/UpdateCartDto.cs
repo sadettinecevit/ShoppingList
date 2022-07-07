@@ -4,9 +4,11 @@ using ShoppingList.Domain.Entities;
 
 namespace ShoppingList.Application.Dto.Command
 {
+    //gereksiz
     public class UpdateCartDto : IRequest<HandlerResponse<Cart>>
 	{
-		public IQueryable<Category> ShoppingCategory { get; set; }
-	}
+        public string Id { get; set; }
+        public string Username { get; set; }
+    }
 
 }

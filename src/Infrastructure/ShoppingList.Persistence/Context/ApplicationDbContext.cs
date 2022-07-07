@@ -20,6 +20,12 @@ namespace ShoppingList.Persistence.Context
         protected override void OnModelCreating(ModelBuilder builder)
         {
             base.OnModelCreating(builder);
+
+            //builder.Entity<Cart>().HasOne(p => p.Id).WithMany().HasForeignKey(p=>p.Owner).IsRequired();
+            //builder.Entity<Category>().HasOne(p => p.Id).WithMany().HasForeignKey(p=>p.Cart).IsRequired();
+            //builder.Entity<Group>().HasOne(p => p.Id).WithMany().HasForeignKey(p=>p.Category).IsRequired();
+            //builder.Entity<Product>().HasOne(p => p.Id).WithMany().HasForeignKey(p=>p.Group).IsRequired();
+            //builder.Entity<User>().HasOne(p => p.Id).WithMany();
         }
     }
 }

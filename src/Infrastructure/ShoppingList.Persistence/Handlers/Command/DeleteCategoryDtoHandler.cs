@@ -4,6 +4,7 @@ using ShoppingList.Application.Dto.Command;
 using ShoppingList.Application.Interfaces.Repositories;
 using ShoppingList.Application.Interfaces.UnitOfWork;
 using ShoppingList.Domain.Entities;
+using System.Diagnostics;
 
 namespace ShoppingList.Persistence.Handlers.Command
 {
@@ -15,11 +16,20 @@ namespace ShoppingList.Persistence.Handlers.Command
 
         public async Task<HandlerResponse<Category>> Handle(DeleteCategoryDto request, CancellationToken cancellationToken)
         {
-            RepositoryResponse<Category> result = await _unitOfWork._categoryRepository.Delete(
+            RepositoryResponse<Category> result = null;
+            try
+            {
+                result = await _unitOfWork._categoryRepository.Delete(
                 new Category
                 {
                     Id = request.Id
                 });
+            }
+            catch (Exception ex)
+            {
+                Debug.WriteLine(ex);
+                throw ex;
+            }
 
             return new HandlerResponse<Category>()
             {

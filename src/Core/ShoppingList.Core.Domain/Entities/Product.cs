@@ -1,11 +1,12 @@
 ﻿using ShoppingList.Domain.Common;
 using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
 
 namespace ShoppingList.Domain.Entities
 {
     public class Product : IBaseEntity
 	{
-		[Key, Required]
+		[DatabaseGenerated(DatabaseGeneratedOption.Identity)]
 		public string Id { get; set; }
 		[Required]
 		public string Name { get; set; }
@@ -17,5 +18,8 @@ namespace ShoppingList.Domain.Entities
 		public decimal Price { get; set; }
 		[Required]
 		public bool IsTaken { get; set; } = false;
+        [Required]
+        [ForeignKey("GroupId")]
+        public virtual Group Group { get; set; }
     }
 }

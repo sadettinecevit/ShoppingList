@@ -6,9 +6,10 @@ namespace ShoppingList.Application.Dto.Command
 {
     public class UpdateGroupDto : IRequest<HandlerResponse<Group>>
 	{
+		public string Id { get; set; }
 		public string Name { get; set; }
 		public DateTime? CompeleteTime { get; set; }
-		public IQueryable<Product> ProductList { get; set; }
+		public string? CategoryId { get; set; }
 	}
 
 }

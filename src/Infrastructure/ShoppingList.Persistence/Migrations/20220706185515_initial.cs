@@ -5,7 +5,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 
 namespace ShoppingList.Persistence.Migrations
 {
-    public partial class init : Migration
+    public partial class initial : Migration
     {
         protected override void Up(MigrationBuilder migrationBuilder)
         {
@@ -184,7 +184,7 @@ namespace ShoppingList.Persistence.Migrations
                     Name = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     CreateTime = table.Column<DateTime>(type: "datetime2", nullable: false),
                     CompeleteTime = table.Column<DateTime>(type: "datetime2", nullable: true),
-                    CartId = table.Column<string>(type: "nvarchar(450)", nullable: true)
+                    CartId = table.Column<string>(type: "nvarchar(450)", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -193,7 +193,8 @@ namespace ShoppingList.Persistence.Migrations
                         name: "FK_Categories_Carts_CartId",
                         column: x => x.CartId,
                         principalTable: "Carts",
-                        principalColumn: "Id");
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
                 });
 
             migrationBuilder.CreateTable(
@@ -204,7 +205,7 @@ namespace ShoppingList.Persistence.Migrations
                     Name = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     CreateTime = table.Column<DateTime>(type: "datetime2", nullable: false),
                     CompeleteTime = table.Column<DateTime>(type: "datetime2", nullable: true),
-                    CategoryId = table.Column<string>(type: "nvarchar(450)", nullable: true)
+                    CategoryId = table.Column<string>(type: "nvarchar(450)", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -213,7 +214,8 @@ namespace ShoppingList.Persistence.Migrations
                         name: "FK_Groups_Categories_CategoryId",
                         column: x => x.CategoryId,
                         principalTable: "Categories",
-                        principalColumn: "Id");
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
                 });
 
             migrationBuilder.CreateTable(
@@ -226,7 +228,7 @@ namespace ShoppingList.Persistence.Migrations
                     Quantity = table.Column<float>(type: "real", nullable: false),
                     Price = table.Column<decimal>(type: "decimal(18,2)", nullable: false),
                     IsTaken = table.Column<bool>(type: "bit", nullable: false),
-                    GroupId = table.Column<string>(type: "nvarchar(450)", nullable: true)
+                    GroupId = table.Column<string>(type: "nvarchar(450)", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -235,7 +237,8 @@ namespace ShoppingList.Persistence.Migrations
                         name: "FK_Products_Groups_GroupId",
                         column: x => x.GroupId,
                         principalTable: "Groups",
-                        principalColumn: "Id");
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
                 });
 
             migrationBuilder.CreateIndex(

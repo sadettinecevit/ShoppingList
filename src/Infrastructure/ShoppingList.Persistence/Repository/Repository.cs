@@ -25,25 +25,29 @@ namespace ShoppingList.Persistence.Repository
 
         public virtual async Task<RepositoryResponse<T>> Add(T entity)
         {
-            T result = Table.AddAsync(entity).Result.Entity;
-            int totalRecordCount = await _context.SaveChangesAsync();
-
-            if (totalRecordCount > 0)
+            T result = null;
+            try
             {
+                result = Table.AddAsync(entity).Result.Entity;
+                await _context.SaveChangesAsync();
                 await _redisCacheService.DeleteAsync(cacheName);
+            }
+            catch (Exception ex)
+            {
+                throw ex;
             }
 
             return new RepositoryResponse<T>()
             {
                 Entity = result,
-                TotalRecordCount = TotalRecordCount
+                TotalRecordCount = result != null ? 1 : 0
             };
         }
 
         public virtual async Task<RepositoryResponse<T>> Update(T entity)
         {
             T result = Table.Update(entity).Entity;
-            int totalRecordCount = await _context.SaveChangesAsync();
+            int totalRecordCount = _context.SaveChanges();
 
             if (totalRecordCount > 0)
             {
@@ -59,18 +63,21 @@ namespace ShoppingList.Persistence.Repository
 
         public virtual async Task<RepositoryResponse<T>> Delete(T entity)
         {
-            T result = Table.Remove(entity).Entity;
-            int totalRecordCount = await _context.SaveChangesAsync();
-
-            if (totalRecordCount > 0)
+            T result = null;
+            try
             {
+                result = Table.Remove(entity).Entity;
                 await _redisCacheService.DeleteAsync(cacheName);
+            }
+            catch (Exception ex)
+            {
+                throw ex;
             }
 
             return new RepositoryResponse<T>()
             {
                 Entity = result,
-                TotalRecordCount = TotalRecordCount
+                TotalRecordCount = result != null ? 1 : 0
             };
         }
 

@@ -18,7 +18,7 @@ namespace ShoppingList.Persistence.Handlers.Query
             HandlerResponse<List<GetByIdCartResponseDto>> handlerResponse = new HandlerResponse<List<GetByIdCartResponseDto>>();
             handlerResponse.IsSuccess = carts != null;
 
-            if (carts != null)
+            if (handlerResponse.IsSuccess)
             {
                 foreach (Cart item in carts)
                 {
@@ -27,7 +27,7 @@ namespace ShoppingList.Persistence.Handlers.Query
                         Id = item.Id,
                         CreateTime = item.CreateTime,
                         Owner = item.Owner,
-                        ShoppingCategory = item.ShoppingCategory
+                        ShoppingCategory = _unitOfWork._categoryRepository.GetAsync().Result.Where(I=>I.Cart.Id == item.Id).AsQueryable()
                     });
                 }
             }

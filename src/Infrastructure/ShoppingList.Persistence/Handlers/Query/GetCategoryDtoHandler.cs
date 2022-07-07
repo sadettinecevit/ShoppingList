@@ -22,13 +22,14 @@ namespace ShoppingList.Persistence.Handlers.Query
             {
                 foreach (Category item in category)
                 {
+                    IQueryable<Group> groups = _unitOfWork._groupRepository.GetAsync().Result.AsQueryable();
                     handlerResponse.Data.Add(new GetByIdCategoryResponseDto()
                     {
                         Id = item.Id,
                         Name = item.Name,
                         CreateTime = item.CreateTime,
                         CompeleteTime = item.CompeleteTime,
-                        ShoppingGroup = item.ShoppingGroup
+                        ShoppingGroup = groups
                     });
                 }
             }

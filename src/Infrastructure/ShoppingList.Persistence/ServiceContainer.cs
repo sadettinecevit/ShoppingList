@@ -19,7 +19,8 @@ namespace ShoppingList.Persistence
         public static void AddPersistenceService(this IServiceCollection services, IConfiguration configuration = null)
         {
             services.AddDbContext<ApplicationDbContext>(options =>
-                options.UseSqlServer(configuration?.GetConnectionString("Default")));
+                options.UseSqlServer(configuration?.GetConnectionString("Default"))
+                .UseQueryTrackingBehavior(QueryTrackingBehavior.NoTracking));
 
             services.AddTransient<ICartRepository, CartRepository>();
             services.AddTransient<ICategoryRepository, CategoryRepository>();

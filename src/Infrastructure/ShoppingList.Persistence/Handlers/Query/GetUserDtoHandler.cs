@@ -20,6 +20,7 @@ namespace ShoppingList.Persistence.Handlers.Query
 
             if (users != null)
             {
+                handlerResponse.Data = new List<GetByIdUserResponseDto>();
                 foreach (User item in users)
                 {
                     handlerResponse.Data.Add(new GetByIdUserResponseDto()
